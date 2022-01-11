@@ -1,0 +1,44 @@
+@charset "UTF-8";
+
+@import url('/resources/css/root.css');
+
+#mypage-wrapper{
+	display: flex;
+}
+
+/* 사이드 nav */
+#my-page-aside{
+	width:15%;
+	min-width:max-content;
+}
+#my-page-aside nav{
+	width:100%;
+	min-width:max-content;
+	display: block;
+}
+#my-page-aside p{
+	font-size:1.2em;
+	color:var(--main-color);
+	font-weight: bold;
+}
+#my-page-aside li a{
+	color:var(--dark-color);
+}
+#my-page-aside li a:hover{
+	background-color: var(--gray-color);
+	color:var(--white-color);
+}
+#my-page-aside ul {
+	width:50%;
+	min-width:max-content;
+	display: block;
+	text-align: center;
+	margin:auto;
+	margin-bottom: 0.5em;
+}
+
+/* 실제 컨텐트 */
+#mypage-content{
+	width:85%;
+	padding: 0.5em;
+}

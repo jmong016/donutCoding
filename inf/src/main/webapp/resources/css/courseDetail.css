@@ -1,0 +1,68 @@
+@charset "UTF-8";
+
+@import url('/resources/css/root.css');
+
+section#course-detail-header{
+	background-color: var(--dark-color);
+}
+
+#course-detail-header>div{
+	display: flex;
+	margin: auto;
+}
+#course-detail-header .course-img-web{
+	width: 30%;
+	height: 90%;
+	margin:auto;
+	overflow: hidden;
+    border-radius: 2em;
+}
+#course-detail-header .course-img-mobile{
+	text-align: center;
+	margin-bottom: 1em;
+	}
+#course-detail-header .course_content{
+	width: 69.9%;
+	min-width: max-content;
+	height:max-content;
+	margin:auto;
+	padding-left: 2em;
+}
+	 
+}
+
+#course-detail-header .course_content .c_title{
+	margin-bottom: 1em;
+}
+
+#course-detail-header .course-img-web img{
+	width:100%;
+	height: 100%;
+	object-fit:cover;
+}
+#course-detail-header .course-img-mobile img{
+	width:60%;
+	object-fit:cover;
+}
+#course-detail-body .detail-body-wrapper{
+	display: flex;
+}
+#course-detail-body .course-info{
+	width:80%;
+	position: relative;
+}
+
+#course-detail-body .course-purchase{
+	width: 20%;
+}
+#course-detail-body .course-purchase > div{
+	margin: 0 1em;
+}
+#course-detail-body .course-purchase *{
+	text-align: center;
+}
+#course-detail-body .course-purchase .pc_btn button{
+	width: 100%;
+}
+
+

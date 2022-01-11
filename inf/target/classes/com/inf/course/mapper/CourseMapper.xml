@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.inf.course.mapper.CourseMapper">
+
+<resultMap type="com.inf.course.domain.CourseVO" id="courseMap">
+    <id property="course_seq" column="course_seq"/>
+    <result property="member_id" column="member_id"/>
+    <result property="course_NM" column="course_NM"/>
+    <result property="course_level" column="course_level"/>
+    <result property="course_studyCNT" column="course_studyCNT"/>
+    <result property="course_img_nm" column="course_img_nm"/>
+    <result property="course_intro" column="course_intro"/>
+    <result property="course_price" column="course_price"/>
+    <result property="course_sales_price" column="course_sales_price"/>
+    <result property="course_discount_rate" column="course_discount_rate"/>
+    <result property="course_applyDT" column="course_applyDT"/>
+    <result property="course_regDT" column="course_regDT"/>
+    <result property="course_cancelDT" column="course_cancelDT"/>
+    <result property="course_available_period" column="course_available_period"/>
+    <result property="course_status" column="course_status"/>
+	<collection property="ct_list" column="course_seq" javaType="java.util.ArrayList" ofType="com.inf.course.domain.categoryVO" select="getCategoryListBySeq"/>
+	<collection property="skill_list" column="course_seq" javaType="java.util.ArrayList" ofType="com.inf.course.domain.skillVO" select="getSkillListBySeq"/>
+</resultMap>
+
+<resultMap type="com.inf.course.domain.CategorySkillVO" id="ctMap">
+	<id property="category_seq" column="category_seq"/>
+    <result property="category_nm" column="category_nm"/>
+	<collection property="skill_list" column="category_seq" javaType="java.util.ArrayList" ofType="com.inf.course.domain.SkillVO" select="getSkillListByCtSeq"/>
+</resultMap>
+
+	<select id="selectCourseSeqByLevel" resultMap="courseMap" parameterType="String">
+		<![CDATA[
+		select t.* from (select * from course
+		where course_level=#{level}
+		order by course_regdt desc) t
+		where ROWNUM <= 8
+		]]>
+	</select>
+	
+	<select id="selectCourseSeqByRegDT" resultMap="courseMap">
+		<![CDATA[
+		select t.* from (select * from course
+		order by course_regdt desc) t
+		where ROWNUM <= 8
+		]]>
+	</select>
+	
+	<select id="selectAllCourses" resultMap="courseMap">
+		select * from course order by course_regdt desc
+	</select>
+	
+	<select id="selectAllCategoriesAndSkills" resultMap="ctMap">
+		select * from category order by category_seq
+	</select>
+
+	<select id="selectCourseByCategory" parameterType="Integer" resultMap="courseMap">
+		<![CDATA[
+		select * from course 
+		where course_seq in(select course_seq from course_category where category_seq = #{category_seq})
+		]]>
+	</select>
+
+	<select id="selectCourseByCategoryAndSkill" parameterType="Map" resultMap="courseMap">
+		<![CDATA[
+			select * from course 
+			where course_seq in(select cc.course_seq from course_category cc, course_skill cs
+			where cc.course_seq=cs.course_seq and cc.category_seq=#{category_seq} and cs.skill_seq=#{skill_seq})
+			order by course_regdt desc
+		]]>
+	</select>
+	
+	<insert id="insertNewCourse" parameterType="com.inf.course.domain.CourseVO">
+		<selectKey keyProperty="course_seq" resultType="Integer" order="BEFORE">
+	    	select seq_course.nextval from dual
+		</selectKey>
+		<![CDATA[
+		   insert into course(
+		   course_seq, member_id , course_NM , course_level , 
+		   course_studyCNT ,course_img_nm , course_intro , course_price , 
+		   course_sales_price , course_discount_rate , course_applyDT , course_status ,
+		   course_available_period
+		   )
+			values(
+			#{course_seq} , #{member_id} , #{course_NM} , #{course_level},
+			0 , #{course_img_nm} , #{course_intro} , #{course_price},
+			#{course_sales_price} , #{course_discount_rate} , sysdate , '승인대기', #{course_available_period}
+			)
+		]]>
+	</insert>
+	
+	<insert id="insertNewCourseCategory" parameterType="Map" >
+			insert all
+			<foreach collection="category_seq" item="cts">
+			into course_category values (#{course_seq} , #{cts})
+			</foreach>
+			SELECT *
+      		FROM DUAL
+	</insert>
+	
+	<select id="findDuplicatedSkillName" parameterType="com.inf.course.domain.SkillVO" resultType="Integer">
+		select count(*) from skill where skill_nm = #{skill_nm}
+	</select>
+	
+	<select id="findSkillSeqByName" resultType="com.inf.course.domain.SkillVO" parameterType="com.inf.course.domain.SkillVO">
+		select * from skill where skill_nm = #{skill_nm}
+	</select>
+	
+	<insert id="insertNewSkills" parameterType="com.inf.course.domain.SkillVO">
+		<selectKey keyProperty="skill_seq" resultType="Integer" order="BEFORE">
+	    	select seq_skill.nextval from dual
+		</selectKey>
+		<![CDATA[
+		   insert into skill
+			values( #{skill_seq}, #{skill_nm})
+		]]>
+	</insert>
+	
+	<insert id="insertNewCourseSkills" parameterType="Map" >
+			insert all
+			<foreach collection="skills" item="sks">
+			into course_skill values (#{course_seq} , #{sks.skill_seq})
+			</foreach>
+			SELECT *
+      		FROM DUAL
+	</insert>
+	
+	<update id="cancelCourseBySeq">
+	 	update course set course_status = '신청취소', course_canceldt = sysdate where course_seq = #{course_seq}
+	</update>
+	
+	<select id="selectAwaitCoursesById" resultMap="courseMap">
+		select * from course where member_id = #{member_id} and course_status = '승인대기' order by course_applydt desc
+	</select>
+	
+	<select id="selectCancelCoursesById" resultMap="courseMap">
+		select * from course where member_id = #{member_id} and course_status = '신청취소' order by course_canceldt desc
+	</select>
+	
+	<select id="selectCourseByCourseSeq" resultMap="courseMap">
+		select * from course where course_seq=#{course_seq}
+	</select>
+
+	<select id="getCategoryListBySeq" resultType="com.inf.course.domain.CategoryVO">
+	    select ct.* from course_category cc, category ct 
+	    where cc.category_seq=ct.category_seq and cc.course_seq= #{course_seq}
+	</select>
+	
+	<select id="getSkillListBySeq" resultType="com.inf.course.domain.SkillVO">
+	    select s.* from course_skill cs, skill s
+	    where cs.skill_seq=s.skill_seq and cs.course_seq= #{course_seq}
+	</select>
+	
+	<select id="getSkillListByCtSeq" resultType="com.inf.course.domain.SkillVO">
+		select s.* from category_skill cs , skill s
+		where cs.skill_seq=s.skill_seq
+		and cs.category_seq=#{category_seq}
+	</select>
+	
+	
+</mapper>

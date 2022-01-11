@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.inf.member.mapper.MemberMapper">
+	<resultMap id="memberMap" type="com.inf.member.domain.MemberVO">
+	<id property="member_id" column="member_id"></id>
+	<result property="member_password" column="member_password"></result>
+	<result property="blog_url" column="blog_url"></result>
+	<result property="member_email" column="member_email"></result>
+	<result property="member_nickNM" column="member_nickNM"></result>
+	<result property="member_profile_img_path" column="member_profile_img_path"></result>
+	<result property="member_content" column="member_content"></result>
+	<result property="member_phoneNO" column="member_phoneNO"></result>
+	<result property="member_regDT" column="member_regDT"></result>
+	<result property="member_applyDT" column="member_applyDT"></result>
+	<result property="member_role" column="member_role"></result>
+	<result property="enabled" column="enabled"></result>
+	</resultMap>
+	
+	<!-- 아이디 중복 체크 -->
+	<select id="idChk" resultType="int" parameterType="String">
+		SELECT COUNT(*) FROM member WHERE member_id = #{member_id}
+	</select>
+	<!-- 이메일 중복 체크 -->
+	<select id="emailChk" resultType="int" parameterType="String">
+		SELECT COUNT(*) FROM member WHERE member_email = #{member_email}
+	</select>
+	<!-- 회원가입 -->
+	<insert id="register" parameterType="com.inf.member.domain.MemberVO">
+		insert into member(member_id, member_nickNM, member_password, member_email) values(#{member_id}, #{member_id}, #{member_password},#{member_email})
+	</insert>
+	<!-- 한 명 받아가기 -->
+	<select id="selectOneById" resultMap="memberMap">
+		select * from member where member_id=#{member_id}
+	</select>
+</mapper>
+  
+
+  
+  
+  

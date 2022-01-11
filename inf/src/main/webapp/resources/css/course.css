@@ -1,0 +1,42 @@
+@charset "UTF-8";
+
+@import url('/resources/css/root.css');
+
+#accordion{
+	margin:auto;
+	width: 135px;
+	padding: 0;
+	display:block;
+	left: 20px;
+}
+.acoordion-container{
+	margin:5px 5px;
+	top: 10px;
+	left:20px;
+	max-border: 325px;
+}
+.acoordion-header{
+	border-bottom: 0.5px solid #7FBFDA;
+	height: 30px;
+}
+
+.acoordion-header a{
+	text-decoration: none;
+	margin-left: 0px;
+	padding-left: 0px;
+	font-weight: bold;
+	font-size: 0.8em;
+	color: #8C8C8C;
+	letter-spacing: 0.2em;
+	cursor: pointer;
+}
+.acoordoion-body{
+	padding-top: 10px;
+	margin: auto;
+}
+.acoordoion-body label{
+	padding-bottom: 2px;
+	font-size: 0.8em;
+	color: #8C8C8C;
+	letter-spacing: 0.05em;
+}

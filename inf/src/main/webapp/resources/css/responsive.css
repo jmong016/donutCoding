@@ -1,0 +1,251 @@
+@charset "UTF-8";
+
+@import url('/resources/css/root.css');
+
+/* 모바일 */
+@media (max-width: 735px) {
+    .web-nav{
+        display: none;
+    }
+    #course-list-wrapper{
+    	display: block;
+    }
+    #course-list-wrapper > #nav-category{
+	display: none;
+	}
+	#course-list-wrapper > section#course_list {
+		width: 100%;
+	}
+    .navbar-bottom{
+    	display: block;
+    }
+    #layoutSidenav , #sidebarToggle{
+    	display: block;
+    }
+    .header-buttons .web-btn-header {
+		display: none;
+	}
+    #layoutSidenav_content{
+    	padding-bottom: 50px;
+    }
+    .small-event-image{
+    	display: block;
+    }
+    .large-event-image{
+    	display: none;
+    }
+    section.review .review-container{
+    	height: 600px;
+    }
+	section.review .review-content{
+		height: 100%;
+	}
+	section.review .review-content .content-left{
+		height: max-content;
+		margin: 2rem 0;
+	}
+	section.another-service .service-wrapper{
+		height: 900px;
+	}
+	footer.footer{
+	padding-bottom: 53px;
+	}
+	footer.footer .footer-wrapper{
+	display: block;
+	}
+	footer.footer .footer-left{
+		margin-bottom: 2em;
+		border-bottom: 1px solid var(--gray-color);
+	}
+	section#course-detail-header .course-img-web{
+	display: none;
+	}
+	section#course-detail-header>div{
+	padding: 0;
+	display: block;
+	position: relative;
+	}
+	section#course-detail-header .course_content{
+	width: 100%;
+	padding: 0;
+	text-align: center;
+	}
+	section.main-slider .event-image{
+	width:100%;
+	}
+	#for-mobile{
+	 display: block;
+	}
+	#for-web{
+	 display: none;
+	}
+}
+
+/* 태블릿 */
+@media (min-width: 736px) and (max-width:768px) {
+    .web-nav{
+    	display: flex;
+    }
+        #course-list-wrapper{
+    	display: block;
+    }
+    #course-list-wrapper > #nav-category{
+	display: none;
+	}
+	#course-list-wrapper > section#course_list {
+		width: 100%;
+	}
+    #layoutSidenav , #sidebarToggle{
+    	display: none;
+    }
+    .navbar-expand .navbar-nav .nav-link{
+    	font-size: 1rem;
+    }
+    .navbar-bottom{
+    	display: none;
+    }
+    section.review .review-container{
+    	height: 300px;
+    }
+	section.review .review-content{
+		height: 100%;
+	}
+	section.review .review-content .content-left{
+		height: max-content;
+		margin: 2rem 0;
+	}
+	footer.footer .footer-wrapper{
+	display: block;
+	}
+	footer.footer .footer-left{
+		margin-bottom: 2em;
+		border-bottom: 1px solid var(--gray-color);
+	}
+	section#course-detail-header .course-img-web{
+	display: none;
+	}
+	section#course-detail-header>div{
+	padding: 0;
+	display: block;
+	position: relative;
+	}
+	section#course-detail-header .course_content{
+	width: 100%;
+	padding: 0;
+	text-align: center;
+	}
+	#for-mobile{
+	 display: block;
+	}
+	#for-web{
+	 display: none;
+	}
+}
+
+/* 일반 웹 */
+@media (min-width: 769px) {
+    .web-nav{
+    	display: flex;
+    }
+    #layoutSidenav , #sidebarToggle{
+    	display: none;
+    }
+    .navbar-expand .navbar-nav .nav-link{
+    	font-size: 1rem;
+    }
+    .navbar-bottom{
+    	display: none;
+    }
+    .event-image-01{
+	background-image: url("/resources/images/event01_large.png");
+	}
+	.event-image-02{
+	background-image: url("/resources/images/event02_large.gif");
+	}
+	.event-image-03{
+	background-image: url("/resources/images/event03_large.gif");
+	}
+	.event-image-04{
+	background-image: url("/resources/images/event04_large.gif");
+	}
+	footer.footer .footer-wrapper{
+	display: flex;
+	justify-content: space-around;
+	}
+	footer.footer .footer-wrapper .footer-left{
+		width:60%
+	}
+	footer.footer .footer-wrapper .footer-right{
+		width:40%;
+	}
+	footer.footer .footer-left{
+		border-right: 1px solid var(--gray-color);
+	}
+	section#course-detail-header .course-img-mobile{
+	display: none;
+	}
+	section#course-detail-body .course-purchase-mobile{
+	display : none;
+	}
+	#for-mobile{
+	 display: none;
+	}
+	#for-web{
+	 display: block;
+	}
+	
+}
+
+/* 하단은 무시하셔도 됩니다. */
+
+@media (min-width: 1025px) {
+	.event-wrapper{
+	width:80%;
+	margin: auto;
+	}
+}
+@media (max-width: 992px) {
+	section.another-service .service-wrapper .wrapper{
+	border-right: none;
+	border-bottom: 0.5em solid var(--gray-color);	
+	}
+}
+@media (min-width: 992px) {
+	section.another-service .service-wrapper .wrapper{
+	border-right: 0.5em solid var(--gray-color);
+	border-bottom: none;	
+	}
+}
+
+@media (max-width: 1024px) {
+	section#course-detail-body .course-purchase-mobile{
+	display : block;
+	position:absolute;
+	bottom: 50px;
+	}
+	section#course-detail-body .course-purchase{
+	display : none;
+	}
+	section#course-detail-body .detail-body-wrapper{
+	display: block;
+	}
+	section#course-detail-body .course-info{
+	width: 100%;
+	}
+}
+
+@media (min-width: 1025px) {
+	section#course-detail-body .course-purchase-mobile{
+	display : none;
+	}
+	section#course-detail-body .course-purchase{
+	display : block;
+	position: sticky;
+	top : 1em;
+	}
+}
+
+	
+
+
+

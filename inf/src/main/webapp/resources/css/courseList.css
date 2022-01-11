@@ -1,0 +1,418 @@
+@charset "UTF-8";
+
+@import url('/resources/css/root.css');
+
+#course-list-wrapper{
+	display: flex;
+	justify-content: space-between;
+}
+section#nav-category{
+	width: 15%;
+	min-width: max-content;
+	margin-top: 2em;
+}
+
+section#course_list{
+	width: 85%;
+}
+
+section#course_list {
+	margin-top: 2em;
+}
+
+#course_list .courses_container {
+	box-sizing: inherit;
+}
+
+.courses_body>div {
+	display: block;
+}
+
+.box {
+	background-color: #fff;
+	border-radius: 4px;
+	color: #333;
+	padding: 1.25rem;
+}
+
+.media {
+	align-items: flex-start;
+	display: flex;
+	text-align: left;
+}
+
+.courses_main .courses_container .box {
+	box-shadow: none;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.box .course_card_item {
+	height: 100%
+}
+
+.media-left {
+	margin-left: 1rem;
+}
+
+.media-left, .media-right {
+	flex-basis: auto;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+.courses_body a {
+	color: currentColor;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.media-left, .course_category {
+	margin: 0;
+	padding: 0;
+}
+
+.media-left, .course_category {
+	display: block;
+	margin-block-start: 1em;
+	margin-block-end: 1em;
+	margin-inline-start: 40px;
+	margin-inline-end: 40px;
+}
+
+.image {
+	display: block;
+	position: relative;
+	max-width: 100%;
+	height: auto;
+}
+
+.is_thumbnail img {
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+.is_thumbnail {
+	display: block;
+	position: relative;
+	padding-top: 65.1%;
+}
+
+.box .course_card_item .image.is_thumbnail {
+	width: 8rem;
+}
+
+.box.course_card_item .course-thumbnail{
+	width: 15%;
+	margin-right:1em;
+}
+
+.box.course_card_item .course-thumbnail *{
+	height: 100%;
+}
+
+.box.course_card_item .course_list_content_container {
+	width: 100%;
+	display: flex;
+}
+
+.box .course_list_content_container .course_title {
+	font-weight: 700;
+	font-size: 1.125rem;
+}
+
+.course_list_content_container .course_info .tags {
+	margin: 0.25rem 0;
+}
+
+.checked {
+	color: orange;
+}
+
+.rating_star {
+	position: relative;
+	width: 5rem;
+	display: inline-block;
+}
+
+.star_solid {
+	display: inline;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	float: left;
+}
+
+.box .course_list_content_container .course_info .rating span {
+	font-size: .5rem;
+}
+
+.box .course_list_content_container .course_price {
+	margin-left: auto;
+	text-align: right;
+	min-width: 6.5rem;
+	margin-top: 1rem;
+}
+
+.box .course_list_content_container .course_price .product_amount {
+	font-size: 1.125rem;
+	font-weight: 700;
+}
+
+.box .course_list_content_container .course_price .product_amount del {
+	opacity: .7;
+	font-size: .875rem;
+	font-weight: inherit;
+}
+
+.box .course_list_content_container .course_price .cart_btn_container {
+	margin-top: 0.25rem;
+	text-align: right;
+}
+
+.course_card_item {
+	margin: 0;
+	border: 0;
+	padding: 1em;
+}
+
+.levelbadge {
+	margin-left: 0.5rem;
+}
+
+.course_list_content_container .course_info .course_category {
+	font-weight: 700;
+	font-size: 0.8rem;
+	margin: 0.2rem 0;
+}
+
+.course_search_div {
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+}
+
+form.course_search input[type=text] {
+	padding: 10px;
+	font-size: 17px;
+	border: 1px solid #dedede;
+	float: left;
+	background: var(--white-color);
+	width: 75%;
+}
+
+form.course_search button {
+	float: left;
+	padding: 10px;
+	background: var(--main-color);
+	color: white;
+	font-size: 17px;
+	border: 1px solid var(--main-color);
+	border-left: none;
+	cursor: pointer;
+	width: 9%;
+	min-width: max-content;
+}
+
+form.course_search button:hover {
+	opacity: 0.5;
+}
+
+form.course_search::after {
+	content: "";
+	clear: both;
+	display: table;
+}
+
+.course_search input:focus {
+	outline: 1px solid var(--main-color);
+}
+
+/*the container must be positioned relative:*/
+.course-search-select {
+	position: relative;
+	float: left;
+	font-size: 17px;
+	border: 1px solid var(--main-color);
+	text-align: left;
+	width: 15%;
+}
+
+.course-search-select select {
+	display: none; /*hide original SELECT element:*/
+}
+
+.select-selected {
+	background-color: white;
+}
+
+/*style the arrow inside the select element:*/
+.select-selected:after {
+	position: absolute;
+	content: "";
+	top: 18px;
+	right: 10px;
+	width: 0;
+	height: 0;
+	border: 6px solid black;
+	border-color: black transparent transparent transparent;
+}
+
+/*point the arrow upwards when the select box is open (active):*/
+.select-selected.select-arrow-active:after {
+	border-color: transparent transparent black transparent;
+	top: 10px;
+}
+
+/*style the items (options), including the selected item:*/
+.course_search{
+	width: 70%;
+}
+.select-items div, .select-selected {
+	color: black;
+	padding: 10px;
+	border: 1px solid transparent;
+	cursor: pointer;
+	user-select: none;
+	width: 100%;
+	background-color: var(--white-color);
+}
+
+/*style items (options):*/
+.select-items {
+	position: absolute;
+	background-color: var(- -white-color);
+	border: 1px solid var(- -main-color);
+	top: 100%;
+	left: 0;
+	right: 0;
+	z-index: 99;
+}
+
+/*hide the items when the select box is closed:*/
+.select-hide {
+	display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+	background-color: white;
+}
+
+.courses_body .courses_header {
+	padding-bottom: 1.5rem;
+	border-bottom: 1px solid #dedede;
+	margin-left: 0.75rem;
+	margin-right: 0.75rem;
+}
+
+.courses_breadcrumb {
+	font-size: 1rem;
+	white-space: nowrap;
+}
+
+.courses_breadcrumb li+li:before {
+	color: #b5b5b5;
+	content: "|";
+}
+
+nav .courses_breadcrumb ul {
+	align-items: baseline;
+}
+
+.courses_breadcrumb ul {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.courses_breadcrumb li {
+	align-items: center;
+	display: flex;
+	margin: 0;
+	padding: 0;
+	text-align: -webkit-match-parent;
+}
+
+.courses_breadcrumb a {
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	padding: 0 0.75em;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.courses_breadcrumb li:first-child a {
+	padding-left: 0;
+}
+
+.courses_body .courses_main .courses_breadcrumb .category_link {
+	color: #454545;
+	font-size: 18px;
+}
+
+.courses_body .courses_main .courses_breadcrumb {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 8px;
+	padding-right: 1rem;
+	margin-left: 0.75rem;
+	margin-bottom: 0;
+}
+
+.form-select {
+	width: auto;
+}
+
+/* 모바일 */
+@media ( max-width : 735px) {
+	.courses_main .courses_container .box {
+		padding: 0.5rem 1rem;
+	}
+	.box.course_card_item .media-left {
+		margin-left: 0.5rem;
+	}
+	.box.course_card_item .course_list_content_container .course_info {
+		margin-left: 0.25rem;
+	}
+	.box.course_card_item .course_list_content_container .course_price {
+		margin-left: auto;
+		text-align: center;
+		max-width: 6rem;
+		min-width: 4.6rem;
+	}
+	.box.course_card_item .course_list_content_container .course_price .product_amount
+		{
+		font-size: 1rem;
+		font-weight: 700;
+		text-align: right;
+		padding-right: 0.125rem;
+	}
+	.box.course_card_item .course_list_content_container .course_price .cart_btn_container
+		{
+		margin-top: 0.25rem;
+		text-align: right;
+	}
+	.courses_body .courses_main .courses_breadcrumb ul {
+		margin-bottom: 0.75rem;
+	}
+	.course_search {
+    	width: 100%;
+	}
+	form.course_search button{
+		width: 0;
+	}
+	.course-search-select{
+		width: 27%;
+	}
+	form.course_search input[type=text]{
+		width: 60%
+	}
+}
