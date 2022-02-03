@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inf.order.mapper.OrderMapper">
+	<resultMap type="com.inf.course.domain.CourseVO"
+		id="courseMap">
+		<id property="course_seq" column="course_seq" />
+		<result property="member_id" column="member_id" />
+		<result property="course_NM" column="course_NM" />
+		<result property="course_level" column="course_level" />
+		<result property="course_studyCNT" column="course_studyCNT" />
+		<result property="course_img_nm" column="course_img_nm" />
+		<result property="course_intro" column="course_intro" />
+		<result property="course_price" column="course_price" />
+		<result property="course_sales_price"
+			column="course_sales_price" />
+		<result property="course_discount_rate"
+			column="course_discount_rate" />
+		<result property="course_applyDT" column="course_applyDT" />
+		<result property="course_regDT" column="course_regDT" />
+		<result property="course_cancelDT" column="course_cancelDT" />
+		<result property="course_available_period"
+			column="course_available_period" />
+		<result property="course_status" column="course_status" />
+		<collection property="ct_list" column="course_seq"
+			javaType="java.util.ArrayList"
+			ofType="com.inf.course.domain.categoryVO"
+			select="getCategoryListBySeq" />
+		<collection property="skill_list" column="course_seq"
+			javaType="java.util.ArrayList" ofType="com.inf.course.domain.skillVO"
+			select="getSkillListBySeq" />
+	</resultMap>
+	<resultMap type="com.inf.order.domain.OrderListVO" id="orderMap">
+		<id property="order_seq" column="order_seq" />
+		<result property="order_id" column="order_id" />
+		<result property="member_id" column="member_id" />
+		<result property="buyer_name" column="buyer_name" />
+		<result property="buyer_phone" column="buyer_phone" />
+		<result property="buyer_email" column="buyer_email" />
+		<result property="orderDT" column="orderDT" />
+		<collection property="courses" column="order_id"
+			javaType="java.util.ArrayList" ofType="com.inf.order.domain.OrderCourseVO"
+			select="getCoursesByOrderId" />
+	</resultMap>
+		<resultMap type="com.inf.course.domain.PurchaseCourseVO" id="myCourseMap">
+		<result property="member_id" column="member_id" />
+		<result property="course_seq" column="course_seq" />
+		<result property="end_dt" column="enddt" />
+		<collection property="course" column="course_seq"
+			ofType="com.inf.course.domain.CourseVO"
+			select="getCourseByCourseSeq" />
+	</resultMap>
+	<!-- 위시리스트 중복확인 -->
+	<select id="selectDuplicatedWishListByMemberIdAndCourseSeq"
+		resultType="Integer">
+		select count(*) from wish_list where member_id =
+		#{member_id} and course_seq = #{course_seq}
+	</select>
+	<!-- 위시리스트 추가 -->
+	<insert id="insertNewWishList">
+		<selectKey keyProperty="wish_seq" resultType="Integer"
+			order="BEFORE">
+			select seq_wish.nextval from dual
+		</selectKey>
+		insert into wish_list
+		values(#{wish_seq},#{member_id},#{course_seq},sysdate)
+	</insert>
+	<!-- 장바구니 중복 확인 -->
+	<select id="selectDuplicatedCartItemByMemberIdAndCourseSeq"
+		resultType="Integer">
+		select count(*) from cart where member_id = #{member_id}
+		and course_seq = #{course_seq}
+	</select>
+	<!-- 장바구니 추가 -->
+	<insert id="insertNewCartItem">
+		<selectKey keyProperty="cart_seq" resultType="Integer"
+			order="BEFORE">
+			select seq_cart.nextval from dual
+		</selectKey>
+		insert into cart
+		values(#{cart_seq},#{member_id},#{course_seq},sysdate)
+	</insert>
+	<!-- 회원에 해당하는 장바구니 가져오기 -->
+	<select id="selectCartItemByMemberId" resultMap="courseMap">
+		select c.* from course c , cart ct
+		where c.course_seq = ct.course_seq and ct.member_id = #{member_id}
+		order by cart_regdt desc
+	</select>
+	<!-- 장바구니에서 삭제 -->
+	<delete id="deleteCartItemByMemberIdAndCourseSeq">
+		delete from cart where member_id = #{member_id} and
+		course_seq = #{course_seq}
+	</delete>
+	<delete id="deleteCartItemforPurchase">
+		delete from cart where member_id = #{member_id} and course_seq in
+		<foreach collection="courses" item="item" open="(" separator="," close=")">
+			#{item.course_seq}
+		</foreach>
+	</delete>
+	<!-- 회원에 해당하는 위시리스트 가져오기 -->
+	<select id="selectWishListByMemberId" resultMap="courseMap">
+		select c.* from course c , wish_list wl
+		where c.course_seq = wl.course_seq and wl.member_id = #{member_id}
+		order by wish_regdt desc
+	</select>
+	<!-- 위시리스트에서 삭제 -->
+	<delete id="deleteWishListByMemberIdAndCourseSeq">
+		delete from wish_list where member_id = #{member_id}
+		and course_seq = #{course_seq}
+	</delete>
+	<!-- 내 학습 중복 확인 -->
+	<select id="selectDuplicatedPurchaseListByMemberIdAndCourseSeq"
+		resultType="Integer">
+		select count(*) from purchase_course where
+		member_id=#{member_id} and course_seq = #{course_seq}
+	</select>
+	<select id="selectDuplicatedPurchaseListByOrderList" resultType="Integer">
+		select count(*) from purchase_course where
+		member_id = #{member_id}
+		and course_seq in
+		<foreach collection="courses" item="item" open="(" separator="," close=")">
+			#{item.course_seq}
+		</foreach>
+	</select>
+	<!-- 주문 내역에 추가 -->
+	<insert id="insertNewOrderList">
+		insert into
+		order_list(order_seq,order_id,course_seq,member_id,buyer_name,buyer_phone,buyer_email,amounted_pay,orderdt)
+		values(seq_order.nextval,seq_order_id.nextval,#{course_seq},#{member_id},#{buyer_name},#{buyer_phone},#{buyer_email},#{amounted_pay},sysdate)
+	</insert>
+	<insert id="insertNewOrderLists">
+			<selectKey keyProperty="order_id" resultType="Integer"
+			order="BEFORE">
+			select seq_order_id.nextval from dual
+			</selectKey>
+			insert all
+			<foreach collection="courses" item="item">
+			into order_list(order_seq,order_id,course_seq,member_id,buyer_name,buyer_phone,buyer_email,amounted_pay,orderdt) 
+			values (get_order_seq(),#{order_id},#{item.course_seq},#{member_id},#{buyer_name},#{buyer_phone},#{buyer_email},#{item.amounted_pay},sysdate)
+			</foreach>
+			SELECT * FROM DUAL
+	</insert>
+	<!-- 내 학습에 추가 -->
+	<insert id="insertNewPurchaseCourse">
+		insert into purchase_course(member_id,course_seq,startdt,enddt)
+		values(#{member_id},#{course_seq},sysdate,
+		<choose>
+			<when test="course_available_period == 0">
+				null
+			</when>
+			<otherwise>
+				add_months(sysdate,#{course_available_period})
+			</otherwise>
+		</choose>
+		)
+	</insert>
+	<insert id="insertNewPurchaseCourses">
+			insert all
+			<foreach collection="courses" item="item">
+			into purchase_course(member_id,course_seq,startdt,enddt)
+			values(#{member_id},#{item.course_seq},sysdate,
+			<choose>
+				<when test="item.course_available_period == 0">
+					null
+				</when>
+				<otherwise>
+					add_months(sysdate,#{item.course_available_period})
+				</otherwise>
+			</choose>
+			)
+			</foreach>
+			SELECT *
+      		FROM DUAL
+	</insert>
+	<!-- 해당 회원의 구매내역 -->
+	<select id="selectAllOrderListByMemberId" resultMap="orderMap">
+		select DISTINCT order_id, buyer_name, buyer_phone, buyer_email, orderdt from order_list 
+		where member_id = #{member_id} order by orderdt desc
+	</select>
+	<!-- 해당 회원의 내 학습 -->
+	<select id="selectPurchaseCoursesByMemberId" resultMap="myCourseMap">
+		select course_seq,enddt from purchase_course where member_id = #{member_id} 
+		order by startdt desc
+	</select>
+	<!-- .............................................................................. -->
+	<select id="getCourseByCourseSeq" resultType="com.inf.course.domain.CourseVO">
+		select * from course where course_seq = #{course_seq}
+	</select>
+	<select id="getCoursesByOrderId"
+		resultType="com.inf.order.domain.OrderCourseVO">
+		select DISTINCT c.course_nm,c.course_seq,c.course_img_nm,ol.amounted_pay from course c, order_list ol 
+		where c.course_seq in(select course_seq from order_list where order_id=#{order_id})
+	</select>
+	<select id="getCategoryListBySeq"
+		resultType="com.inf.course.domain.CategoryVO">
+		select ct.* from course_category cc, category ct
+		where cc.category_seq=ct.category_seq and cc.course_seq= #{course_seq}
+	</select>
+	<select id="getSkillListBySeq"
+		resultType="com.inf.course.domain.SkillVO">
+		select s.* from course_skill cs, skill s
+		where cs.skill_seq=s.skill_seq and cs.course_seq= #{course_seq}
+	</select>
+</mapper>
+  
+
+  
+  
+  

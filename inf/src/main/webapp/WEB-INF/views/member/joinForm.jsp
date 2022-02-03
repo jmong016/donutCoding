@@ -123,7 +123,7 @@ input[type=text]:focus, input[type=password]:focus {
       style="border: 1px solid #ccc">
 
       <div class="mb-3 mt-3">
-         <label for="form-id" class="form-label">아이디</label>
+         <label for="member_id" class="form-label">아이디</label>
          <div class="input-group mb-3">
             <input type="text" class="form-control" name="member_id"
                id="member_id" placeholder="아이디를 입력해주세요." required>
@@ -137,7 +137,7 @@ input[type=text]:focus, input[type=password]:focus {
 
 
 <div class="mb-3 mt-3">
-   <label for="form-pwd" class="form-label">비밀번호</label>
+   <label for="member_password" class="form-label">비밀번호</label>
    <div class="input-group mb-3">
       <input type="password" class="form-control" name="member_password"
          id="member_password" placeholder="2~15자리의 영문, 숫자 입력이 가능합니다."
@@ -148,7 +148,7 @@ input[type=text]:focus, input[type=password]:focus {
 
 
 <div class="mb-3 mt-3">
-   <label for="form-pwd" class="form-label">비밀번호 재입력</label>
+   <label for="member_password-checked" class="form-label">비밀번호 재입력</label>
    <div class="input-group mb-3">
       <input type="password" class="form-control"
          id="member_password-checked" placeholder="비밀번호를 다시한번 입력해 주세요."
@@ -159,7 +159,7 @@ input[type=text]:focus, input[type=password]:focus {
 
 
 <div class="mb-3">
-   <label for="form-email" class="form-label">이메일</label>
+   <label for="member_email" class="form-label">이메일</label>
    <div class="input-group mb-3">
       <input type="text" class="form-control" id="member_email"
          placeholder="***@***.com" name="member_email" required>

@@ -1,10 +1,13 @@
 package com.inf.course.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +22,11 @@ import lombok.extern.log4j.Log4j;
 
 @Log4j
 @Service("courseService")
+@Transactional
 public class CourseServiceImpl implements CourseService {
+	
+	private static String CURR_COURSE_REPO_PATH = "C:\\inf\\file_repo\\course";
+	private static String IMAGE_TEMP_PATH_COURSE = "C:\\inf\\temp\\course";
 
 	@Setter(onMethod_ = @Autowired)
 	private CourseMapper mapper;
@@ -35,8 +42,15 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public List<CourseVO> allCourseList() {
-		List<CourseVO> allCourses = mapper.selectAllCourses();
+	public List<CourseVO> allCourseList(String order) {
+		List<CourseVO> allCourses = new ArrayList<CourseVO>();
+		if(order == null || "recent".equals(order)) {
+			allCourses = mapper.selectAllAbleCourses();
+		}else if("rating".equals(order)){
+			allCourses = mapper.selectAllAbleCoursesOrderByRating();
+		}else { 
+			allCourses = mapper.selectAllAbleCoursesOrderByPersonnel(); 
+		}
 		System.out.println("전체 강의 수 >>>>>>>> " + allCourses.size());
 		return allCourses;
 	}
@@ -61,12 +75,11 @@ public class CourseServiceImpl implements CourseService {
 	}
 
 	@Override
-	public CourseVO courseByCourseSeq(int category_seq) {
-		CourseVO course = mapper.selectCourseByCourseSeq(category_seq);
+	public CourseVO courseByCourseSeq(int course_seq) {
+		CourseVO course = mapper.selectCourseByCourseSeq(course_seq);
 		return course;
 	}
 
-	@Transactional
 	@Override
 	public int addNewCourse(CourseVO course, List<Integer> category_seq, List<String> skill_nm) {
 		log.info("강의 등록 serviceImpl 접근");
@@ -111,7 +124,16 @@ public class CourseServiceImpl implements CourseService {
 		int skResult = mapper.insertNewCourseSkills(sk);
 		log.info("course_skill에 추가된 행수 >>>>>> " + skResult);
 		
-		return course_seq;
+		if(skResult >0) {
+			File srcFile = new File(IMAGE_TEMP_PATH_COURSE + "\\" + course.getCourse_img_nm());
+			File destDir = new File(CURR_COURSE_REPO_PATH + "\\" + course_seq);
+			try {
+				FileUtils.moveFileToDirectory(srcFile, destDir, true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return skResult;
 	}
 
 	// 승인 대기중인 강의 
@@ -123,21 +145,76 @@ public class CourseServiceImpl implements CourseService {
 
 	@Transactional
 	@Override
-	public CourseVO cancelCourse(int course_seq) {
+	public int cancelCourse(int course_seq) {
 		int result = mapper.cancelCourseBySeq(course_seq);
-		CourseVO course;
-		if(result>0) {
-			course = mapper.selectCourseByCourseSeq(course_seq);
-		}else {
-			course = null;
-		}
-		return course;
+		return result;
 	}
 
 	@Override
 	public List<CourseVO> cancelCourse(String member_id) {
 		List<CourseVO> cancle = mapper.selectCancelCoursesById(member_id);
 		return cancle;
+	}
+
+	@Override
+	public List<CourseVO> allAwaitCourse() {
+		List<CourseVO> await = mapper.selectAllAwaitCourses();
+		if(await.size() == 0) {
+			await = null;
+		}
+		return await;
+	}
+
+	@Override
+	public List<CourseVO> allAbleCourse() {
+		List<CourseVO> able = mapper.selectAllAbleCourses();
+		return able.size() == 0? null : able;
+	}
+
+	@Override
+	public List<CourseVO> allEnableCourse() {
+		List<CourseVO> enable = mapper.selectAllEnableCourses();
+		return enable.size() == 0? null : enable;
+	}
+
+	@Override
+	public int approveCourse(int course_seq) {
+		int result = mapper.updateCourseStatusToApproved(course_seq);
+		return result;
+	}
+
+	@Override
+	public int stopCourse(int course_seq) {
+		int result = mapper.updateCourseStatusToStop(course_seq);
+		return result;
+	}
+
+	@Override
+	public List<CourseVO> ableCourse(String member_id) {
+		List<CourseVO> able = mapper.selectAbleCourses(member_id);
+		return able.size() == 0? null : able;
+	}
+
+	@Override
+	public int reapplyCourse(int course_seq) {
+		int result = mapper.updateCourseStatusToAwait(course_seq);
+		return result;
+	}
+
+	@Override
+	public List<CourseVO> searchCourse(String type, String item) {
+		String str = "%" + item + "%";
+		switch (type) {
+		case "skill":
+			List<CourseVO> courseSkill = mapper.selectCourseBySearchSkill(str);
+			return courseSkill.size() == 0 ? null : courseSkill;
+		case "name":
+			List<CourseVO> courseName = mapper.selectCourseBySearchName(str);
+			return courseName.size() == 0 ? null : courseName; 	
+		default:
+			List<CourseVO> course = mapper.selectCourseBySearchAll(str);
+			return course.size() == 0 ? null : course; 
+		}
 	}
 
 

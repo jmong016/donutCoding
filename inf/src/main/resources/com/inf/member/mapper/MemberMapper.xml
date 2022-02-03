@@ -7,18 +7,23 @@
 	<resultMap id="memberMap" type="com.inf.member.domain.MemberVO">
 	<id property="member_id" column="member_id"></id>
 	<result property="member_password" column="member_password"></result>
-	<result property="blog_url" column="blog_url"></result>
 	<result property="member_email" column="member_email"></result>
 	<result property="member_nickNM" column="member_nickNM"></result>
-	<result property="member_profile_img_path" column="member_profile_img_path"></result>
+	<result property="member_profile_img_nm" column="member_profile_img_nm"></result>
 	<result property="member_content" column="member_content"></result>
 	<result property="member_phoneNO" column="member_phoneNO"></result>
 	<result property="member_regDT" column="member_regDT"></result>
 	<result property="member_applyDT" column="member_applyDT"></result>
+	<result property="member_approveDT" column="member_approveDT"></result>
+	<result property="member_stopDT" column="member_stopDT"></result>
+	<result property="member_status" column="member_status"></result>
 	<result property="member_role" column="member_role"></result>
 	<result property="enabled" column="enabled"></result>
 	</resultMap>
-	
+	<!-- 모든 회원 수 -->
+	<select id="selectAllUserCount" resultType="int">
+		select count(*) from member where member_role in('멘토','멘티')
+	</select>
 	<!-- 아이디 중복 체크 -->
 	<select id="idChk" resultType="int" parameterType="String">
 		SELECT COUNT(*) FROM member WHERE member_id = #{member_id}
@@ -29,12 +34,67 @@
 	</select>
 	<!-- 회원가입 -->
 	<insert id="register" parameterType="com.inf.member.domain.MemberVO">
-		insert into member(member_id, member_nickNM, member_password, member_email) values(#{member_id}, #{member_id}, #{member_password},#{member_email})
+		insert into member(member_id, member_nickNM, member_password, member_email,member_profile_img_nm) values(#{member_id}, #{member_id}, #{member_password},#{member_email},'default_profile.png')
 	</insert>
 	<!-- 한 명 받아가기 -->
 	<select id="selectOneById" resultMap="memberMap">
 		select * from member where member_id=#{member_id}
 	</select>
+	<!-- 멘토 신청한 회원상태 승인 대기로 변경하기 -->
+	<update id="updateMemberStatusToAwait">
+		update member set member_status='승인대기',member_applyDT=sysdate where member_id = #{member_id}
+	</update>
+	<!-- 멘토 신청을 취소한 회원상태 신청 취소로 변경하기 -->
+	<update id="updateMemberStatusToCancle">
+		update member set member_status='신청취소',member_applyDT=null where member_id = #{member_id}
+	</update>
+	<!-- 멘토 승인 대기중인 모든 회원 -->
+	<select id="selectAllAwaitMemberForMentor" resultMap="memberMap">
+		select * from member where member_status='승인대기' order by member_applyDT desc
+	</select>
+	<!-- 모든 멘토 -->
+	<select id="selectAllMentor" resultMap="memberMap">
+		select * from member where member_role = '멘토' order by member_approveDT desc
+	</select>
+	<!-- 모든 자격정지 멘토 -->
+	<select id="selectAllMentorStopped" resultMap="memberMap">
+		select * from member where member_role = '멘토' and member_status='자격정지' order by member_stopDT desc
+	</select>
+	<!-- 멘티 -> 멘토 승인 -->
+	<update id="updateMemberRoleToMentor">
+		update member set member_role = '멘토',member_status='승인완료' ,member_approveDT = sysdate where member_id = #{member_id}
+	</update>
+	<!-- 멘토 자격 정지 -->
+	<update id="updateMemberStatusToStop">
+		update member set member_status='자격정지' ,member_stopDT = sysdate where member_id = #{member_id}
+	</update>
+	<!-- 멘토 자격 복귀 -->
+	<update id="updateMemberStatusToApprove">
+		update member set member_status='승인완료' ,member_approveDT = sysdate where member_id = #{member_id}
+	</update>
+	<!-- 프로필 이미지 변경 -->
+	<update id="updateProfileImage">
+		update member set member_profile_img_nm=#{member_profile_img_nm} where member_id = #{member_id}
+	</update>
+	<!-- 회원 정보 변경 (일반) -->
+	<update id="updateMemberInformation">
+		update member set member_nickNM = #{member_nickNM}, member_content = #{member_content},
+		member_email = #{member_email}, member_phoneNO = #{member_phoneNO}
+		where member_id = #{member_id}
+	</update>
+	<!-- 회원 정보 변경 (비밀번호) -->
+	<update id="updateMemberPassword">
+		update member set member_password = #{member_password} where member_id = #{member_id}
+	</update>
+	<!-- 회원 정보 변경 (비밀번호) -->
+	<update id="updateMemberPhoneNo">
+		update member set member_phoneNO = #{member_phoneNO} where member_id = #{member_id}
+	</update>
+	<!-- ................................................................................. -->
+	<select id="selectProfileImageFiles" resultType="com.inf.task.domain.ProfileFileVO">
+		select member_id,member_profile_img_nm from member
+	</select>
+	
 </mapper>
   
 

@@ -8,13 +8,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.inf.common.annotation.LoginRequired;
 import com.inf.course.domain.CategorySkillVO;
@@ -25,7 +29,6 @@ import com.inf.course.service.CourseService;
 import lombok.extern.log4j.Log4j;
 
 @Controller
-@RequestMapping("/")
 @Log4j
 public class CourseController {
 
@@ -33,18 +36,18 @@ public class CourseController {
 	private CourseService courseService;
 
 	@GetMapping("/courses")
-	public String allCourses(HttpServletRequest request , Model model) {
-		HttpSession session = request.getSession();
+	public String allCourses(HttpSession session ,@Nullable @RequestParam String order, Model model) {
 		if(session.getAttribute("ctMap") == null) {
 			List<CategorySkillVO> ctMap = courseService.categorySkillLists();
 			session.setAttribute("ctMap", ctMap);
 		}
-		log.info("강의 리스트 접근");
-		List<CourseVO> allCourse = courseService.allCourseList();
+		log.info("강의 리스트 접근 >>>> " + order);
+		List<CourseVO> allCourse = courseService.allCourseList(order);
 		System.out.println(allCourse.size());
-
+		if(order != null) {
+				model.addAttribute("sort", order);
+		}
 		model.addAttribute("course", allCourse);
-
 		return "course/courseList";
 	}
 	
@@ -89,14 +92,13 @@ public class CourseController {
 		return "course/courseList";
 	}
 	
-//	@ResponseBody
-//	@GetMapping("course/showSkills")
-//	public Map<String, List<SkillVO>> sendSkills(String course_seq, HttpServletRequest request){
-//		Map<String, List<SkillVO>> map = new HashMap<String, List<SkillVO>>();
-//		int seq = Integer.parseInt(course_seq);
-//		
-//		return map;
-//	}
+	@PostMapping("/course/search")
+	public String searchCourse(String type,String item,Model model){
+		log.info("검색 >>>>>" + type + " || " + item);
+		List<CourseVO> course = courseService.searchCourse(type,item);
+		model.addAttribute("course", course);
+		return "course/courseList";
+	}
 	
 
 }

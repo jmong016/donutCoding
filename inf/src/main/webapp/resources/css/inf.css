@@ -1,0 +1,44 @@
+@charset "UTF-8";
+
+@import url('/resources/css/root.css');
+
+#review-course{
+	display: flex;
+}
+
+/* 사이드 nav */
+#inf-aside{
+	width:15%;
+	min-width:max-content;
+}
+#inf-aside nav{
+	width:100%;
+	min-width:max-content;
+	display: block;
+}
+#inf-aside p{
+	font-size:1.2em;
+	color:var(--main-color);
+	font-weight: bold;
+}
+#inf-aside li a{
+	color:var(--dark-color);
+}
+#inf-aside li a:hover{
+	background-color: var(--gray-color);
+	color:var(--white-color);
+}
+#inf-aside ul {
+	width:50%;
+	min-width:max-content;
+	display: block;
+	text-align: center;
+	margin:auto;
+	margin-bottom: 0.5em;
+}
+
+/* 실제 컨텐트 */
+#review-container{
+	width:85%;
+	padding: 0.5em;
+}

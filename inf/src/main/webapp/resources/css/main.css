@@ -114,10 +114,6 @@ section.courses-slider .courseSwiper, .course-wrapper{
 }
 
 /* 수강평 */
-section.review .review-content{
-	height: 300px;
-}
-
 section.review .reviewSwiper , .review-wrapper{
 	height: 300px;
 }
@@ -161,4 +157,11 @@ section.another-service .main-service .main-service-button{
 
 section.courses-slider .courseSwiper .checked {
     color : orange;
+}
+.star-wrapper p{
+	padding: 0;
+	display: inline-block;
+}
+.star-wrapper .selected{
+	color: orange;
 }

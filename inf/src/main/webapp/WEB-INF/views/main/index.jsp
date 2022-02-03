@@ -1,7 +1,25 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-
+<style>
+.courses-slider .c-rating-star{
+	display:inline-block;
+	width : max-content;
+	position: relative;
+}
+.courses-slider .real-star{
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.courses-slider .bg-star {
+  z-index: 0;
+  padding: 0;
+}
+</style>
 <%@ include file="../common/header.jsp"%>
 <link rel="stylesheet"
 	href="https://unpkg.com/swiper/swiper-bundle.min.css" />
@@ -116,18 +134,29 @@
 								<a href="${path }/course/${i.course_seq}">
 									<div class="course">
 										<img class="course-img" alt="강의 ${i.course_seq }"
-											src="${path }/thumbnails?course_seq=${i.course_seq}&img_nm=${i.course_img_nm}">
+											src="${path }/thumbnails?course_seq=${i.course_seq}&img_nm=${i.course_img_nm}"
+											style="width: 300px;height:200px;object-fit:cover;border:none;border-radius: 1em;">
 										<div class="course-content">
 											<h5 class="dark-font">${i.course_NM }</h5>
 											<h6 class="dark-font">${i.member_id }</h6>
-											<h6 class="dark-font">
-												<span class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="fa fa-star"></span> <span
-														class="review_cnt ">(평점 수)</span>
-											</h6>
+											<div class="c-rating-star">
+													<div class="star-wrapper bg-star">
+														<span class="fa fa-star gray-font"></span> <span
+															class="fa fa-star gray-font"></span> <span
+															class="fa fa-star gray-font"></span> <span
+															class="fa fa-star gray-font"></span> <span
+															class="fa fa-star gray-font"></span>
+													</div>
+													<div class="star-wrapper real-star"
+														style="width: <fmt:formatNumber type="number" maxFractionDigits="0" value="${i.course_rating.rate *20 }" />%;">
+														<span class="fa fa-star checked"></span> <span
+															class="fa fa-star checked"></span> <span
+															class="fa fa-star checked"></span> <span
+															class="fa fa-star checked"></span> <span
+															class="fa fa-star checked"></span>
+													</div>
+											</div>
+											<span class="c_rating_avg dark-font">(${i.course_rating.rate })</span>
 											<c:choose>
 											<c:when test="${i.course_sales_price != null && i.course_sales_price != 0}">
 												<h6 class="dark-font">
@@ -144,7 +173,7 @@
 												<h6 class="dark-font">${i.course_price }</h6>
 											</c:otherwise>
 										</c:choose>
-											<h6 class="badge bg-success" style="display: block;width: max-content;margin:auto;">${i.course_studyCNT }+</h6>
+											<h6 class="badge bg-success" style="display: block;width: max-content;margin:auto;">+ ${i.course_studyCNT }명</h6>
 										</div>
 									</div>
 								</a>
@@ -159,7 +188,7 @@
 	</div>
 </section>
 
-<!-- 우리의 이야기 - 블로그 인기글 -->
+<!-- 우리의 이야기 - 블로그 인기글 --><!-- 
 <section class="hot-blog-contents">
 	<div class="container pt-5">
 		<h3>우리들의 이야기</h3>
@@ -181,7 +210,7 @@
 			</div>
 		</div>
 	</div>
-</section>
+</section> -->
 
 <!-- 신규 강의 슬라이더 -->
 <section class="new_courses_slider courses-slider">
@@ -206,18 +235,29 @@
 								<a href="${path }/course/${i.course_seq}">
 								<div class="course">
 									<img class="course-img" alt="강의 ${i.course_seq }"
-										src="${path }/thumbnails?course_seq=${i.course_seq}&img_nm=${i.course_img_nm}">
+										src="${path }/thumbnails?course_seq=${i.course_seq}&img_nm=${i.course_img_nm}"
+										style="width: 300px;height:200px;object-fit:cover;border:none;border-radius: 1em;">
 									<div class="course-content">
 										<h5 class="dark-font">${i.course_NM }</h5>
 										<h6 class="dark-font">${i.member_id }</h6>
-										<h6 class="dark-font">
-											<span class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="fa fa-star"></span> <span
-														class="review_cnt ">(평점 수)</span>
-										</h6>
+										<div class="c-rating-star">
+													<div class="star-wrapper bg-star">
+														<span class="fa fa-star gray-font"></span> <span
+															class="fa fa-star gray-font"></span> <span
+															class="fa fa-star gray-font"></span> <span
+															class="fa fa-star gray-font"></span> <span
+															class="fa fa-star gray-font"></span>
+													</div>
+													<div class="star-wrapper real-star"
+														style="width: <fmt:formatNumber type="number" maxFractionDigits="0" value="${i.course_rating.rate *20 }" />%;">
+														<span class="fa fa-star checked"></span> <span
+															class="fa fa-star checked"></span> <span
+															class="fa fa-star checked"></span> <span
+															class="fa fa-star checked"></span> <span
+															class="fa fa-star checked"></span>
+													</div>
+											</div>
+											<span class="c_rating_avg dark-font">(${i.course_rating.rate })</span>
 										<c:choose>
 											<c:when test="${i.course_sales_price != null && i.course_sales_price != 0}">
 												<h6 class="dark-font">
@@ -234,7 +274,7 @@
 												<h6 class="dark-font">${i.course_price }</h6>
 											</c:otherwise>
 										</c:choose>
-											<h6 class="badge bg-success" style="display: block;width: max-content;margin:auto;">${i.course_studyCNT }+</h6>
+											<h6 class="badge bg-success" style="display: block;width: max-content;margin:auto;">+ ${i.course_studyCNT }명</h6>
 										</div>
 								</div>
 								</a>
@@ -255,7 +295,7 @@
 		<div class="review-content row">
 			<div class="content-left col-md-6">
 				<h1 class="dark-font">
-					<span class="accent-font">회원수</span> 명이 <br> 인프런과 함께합니다.
+					<span class="accent-font">${memberCount }</span> 명이 <br> 인프런과 함께합니다.
 				</h1>
 				<div class="text1">
 					<p class="gray-font">
@@ -264,7 +304,7 @@
 					</p>
 				</div>
 				<div class="buttons">
-					<a class="btn btn-outline-primary" href="${path }/review"> <span>수강평
+					<a class="btn btn-outline-primary" href="${path }/review/course"> <span>수강평
 							더보기 </span><span class="icon"><i class="fal fa-angle-right"></i></span>
 					</a>
 				</div>
@@ -272,16 +312,39 @@
 			<div class="content-right col-md-6">
 				<div class="swiper reviewSwiper">
 					<div class="swiper-wrapper review-wrapper">
-						<div class="swiper-slide">Slide 1</div>
-						<div class="swiper-slide">Slide 2</div>
-						<div class="swiper-slide">Slide 3</div>
-						<div class="swiper-slide">Slide 4</div>
-						<div class="swiper-slide">Slide 5</div>
-						<div class="swiper-slide">Slide 6</div>
-						<div class="swiper-slide">Slide 7</div>
-						<div class="swiper-slide">Slide 8</div>
-						<div class="swiper-slide">Slide 9</div>
-						<div class="swiper-slide">Slide 10</div>
+						<c:forEach items="${review }" var="i">
+						<div id="review-${i.reviewSeq }" class="swiper-slide">
+							<div class="review-content">
+								<div class="star-wrapper mb-1">
+									<c:forEach begin="1" end="5" step="1" var="num">
+										<c:choose>
+											<c:when test="${num <= i.rate }">
+												<p class="star selected" ><span class="fa fa-star"></span></p>
+											</c:when>
+											<c:otherwise>
+												<p class="star" ><span class="fa fa-star"></span></p>
+											</c:otherwise>
+										</c:choose>
+									</c:forEach>
+									<span>( ${i.rate }점 )</span>
+								</div>
+								<div class="content mb-1">
+									${i.content }
+								</div>
+								<div class="info">
+									<span>글쓴이 : ${i.memberNick } </span> <span>강의명 : <a href="${path }/course/${i.courseSeq}">${i.courseName }</a></span> 
+									<br><span>작성일 : <fmt:formatDate value="${i.regDate }" pattern="yyyy년 MM월 dd일  HH:mm"/>  </span> 
+								</div>
+							</div>
+							<div class="review-thumbnail">
+								<a href="${path }/course/${i.courseSeq}"> <!-- 썸네일 --> <img
+									class="img-thumbnail" alt="thumbnail"
+									src="${path }/thumbnails?course_seq=${i.courseSeq}&img_nm=${i.courseImg}"
+									style="width: 100px; height: 80px; object-fit: cover; border: none; border-radius: 1em;">
+								</a>
+							</div>
+						</div>
+					</c:forEach>
 					</div>
 					<div class="swiper-pagination"></div>
 				</div>
@@ -306,8 +369,8 @@
 						</p>
 					</div>
 					<div class="main-service-button">
-						<button type="button" class="btn btn-outline-primary">
-							<a href="#!">지식 공유 참여</a>
+						<button type="button" class="btn btn-outline-primary" onclick="location.href='${path }/mypage/applyMentor'">
+							지식 공유 참여
 						</button>
 					</div>
 				</div>
@@ -323,7 +386,7 @@
 					</div>
 					<div class="main-service-button">
 						<button type="button" class="btn btn-outline-primary">
-							<a href="#!">비즈니스 신청하기</a>
+							비즈니스 신청하기
 						</button>
 					</div>
 				</div>
@@ -339,7 +402,7 @@
 					</div>
 					<div class="main-service-button">
 						<button type="button" class="btn btn-outline-primary">
-							<a href="#!">대학생 신청하기</a>
+							대학생 신청하기
 						</button>
 					</div>
 				</div>

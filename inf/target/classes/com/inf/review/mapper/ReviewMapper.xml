@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.inf.review.mapper.ReviewMapper">
+
+	<resultMap type="com.inf.review.domain.ReviewVO" id="reviewMap">
+		<id property="reviewSeq" column="review_seq" />
+		<result property="courseSeq" column="course_seq" />
+		<result property="memberID" column="member_id" />
+		<result property="content" column="review_content" />
+		<result property="rate" column="review_rating" />
+		<result property="regDate" column="review_regDT" />
+		<collection property="courseImg" column="course_seq" javaType="String" ofType="String"  
+		select="getCourseImgByCourseSeq" />
+		<collection property="courseName" column="course_seq" javaType="String" ofType="String"  
+		select="getCourseNameByCourseSeq" />
+		<collection property="memberNick" column="member_id" javaType="String" ofType="String"  
+		select="getMemberNickByMemberId" />
+	</resultMap>
+	
+	<select id="selectAllReviewOfCourse" resultMap="reviewMap">
+		select * from review order by review_regdt desc
+	</select>
+	
+	<select id="selectAllReviewOfCourseByMemberId" resultMap="reviewMap">
+		select * from review where member_id = #{member_id} order by review_regdt desc
+	</select>
+	
+	<select id="selectRecentReviewOfCourse" resultMap="reviewMap">
+		<![CDATA[
+		select t.* from (select * from review order by review_regdt desc) t
+		where ROWNUM <= 10
+		]]>
+	</select>
+		
+	<select id="selectDuplicatedReviewByCourseSeqAndMemberId" resultType="int">
+	 	select count(*) from review where course_seq = #{courseSeq} and member_id = #{memberID}
+	</select>
+	
+	<insert id="insertNewReviewOfCourse">
+		<selectKey order="BEFORE" keyProperty="reviewSeq" resultType="Integer">
+			select seq_review.nextval from dual
+		</selectKey>
+		insert into review(review_seq,course_seq,member_id,review_content,review_rating,review_regDT)
+		values(#{reviewSeq},#{courseSeq},#{memberID},#{content},#{rate},sysdate)
+	</insert>
+	<delete id="deleteReviewOfCourse">
+		delete from review where review_seq = #{reviewSeq}
+	</delete>
+	<update id="updateReviewOfCourse">
+		update review set review_content = #{content}, review_rating = #{rate}, review_regDT = sysdate
+		where review_seq = #{reviewSeq}
+	</update>
+	<!-- ........................................................................................ -->
+	<select id="getCourseImgByCourseSeq" resultType="String">
+	 	select course_img_nm from course where course_seq =#{courseSeq}
+	</select>
+	<select id="getCourseNameByCourseSeq" resultType="String">
+	 	select course_nm from course where course_seq =#{courseSeq}
+	</select>
+	<select id="getMemberNickByMemberId" resultType="String">
+	 	select member_nicknm from member where member_id =#{memberID}
+	</select>
+</mapper>
+  
+
+  
+  
+  

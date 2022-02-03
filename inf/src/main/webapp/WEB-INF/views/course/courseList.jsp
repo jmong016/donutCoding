@@ -5,20 +5,42 @@
 <link rel="stylesheet" href="/resources/css/course.css" />
 
 <style>
-	section#nav-category #layoutSidenav{
-		display: block;
-		width: 100%;
-		min-height: max-content;
-	}
-	section#nav-category #layoutSidenav #layoutSidenav_nav{
-		width: 100%;
-		min-width: max-content;
-		height: max-content;
-		position: relative;
-	}
-	section#nav-category #layoutSidenav #layoutSidenav_nav .sb-sidenav{
+section#nav-category #layoutSidenav {
+	display: block;
+	width: 100%;
+	min-height: max-content;
+}
+
+section#nav-category #layoutSidenav #layoutSidenav_nav {
+	width: 100%;
+	min-width: max-content;
+	height: max-content;
+	position: relative;
+}
+
+section#nav-category #layoutSidenav #layoutSidenav_nav .sb-sidenav {
 	padding-top: 0;
-	}
+}
+
+#course_list .c-rating-star {
+	display: inline-block;
+	width: max-content;
+	position: relative;
+}
+
+#course_list .real-star {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+#course_list .bg-star {
+	z-index: 0;
+	padding: 0;
+}
 </style>
 
 <div class="container" id="course-list-wrapper">
@@ -72,15 +94,15 @@
 			<div class="acoordoion-body" id="level">
 				<form name="level_select" action="#">
 					<div class="acoordion-content">
-					<input type="checkbox" id="level1" name="level1" value="Beginner">
+					<input type="checkbox" id="level1" name="level1" value="beginner">
 					<label for="level1">입문</label>
 					</div>
 					<div>
-					<input type="checkbox" id="level2" name="level2" value="Basic">
+					<input type="checkbox" id="level2" name="level2" value="basic">
 					<label for="level2">초급</label>
 					</div>
 					<div>
-					<input type="checkbox" id="level3" name="level3" value="Intermediate">
+					<input type="checkbox" id="level3" name="level3" value="intermediate">
 					<label for="level3">중급이상</label>
 					</div>
 				</form>
@@ -93,15 +115,15 @@
 			<div class="acoordoion-body" id="priceContent">
 			<form name="price_select" action="#">
 					<div class="acoordion-content">
-					<input type="checkbox" id="price1" name="price1" value="Free">
+					<input type="checkbox" id="price1" name="price1" value="free">
 					<label for="price1">무료</label>
 					</div>
 					<div>
-					<input type="checkbox" id="price2" name="price2" value="Pay">
+					<input type="checkbox" id="price2" name="price2" value="pay">
 					<label for="price2">유료</label>
 					</div>
 					<div>
-					<input type="checkbox" id="price3" name="price3" value="Sale">
+					<input type="checkbox" id="price3" name="price3" value="sale">
 					<label for="price3">할인중</label>
 					</div>
 				</form>
@@ -112,25 +134,27 @@
 	</section>
 
 	<section id="course_list">
+			<div class="my-2">
+				<p id="s-null-check" style="display:none;font-weight:bold;text-align: center;">검색어를 입력하세요!</p>
+			</div>
 		<div class="courses_container courses_body">
-
 			<!-- courses_header -->
 			<header class="courses_header">
 				<!-- 상단 중앙 서치바 -->
 				<div class="course_search_div">
-					<form class="course_search" action="/action_page.php">
+					<form id="course-search" class="course_search" action="${path }/course/search" method="post" >
 						<!-- search select -->
 						<div class="course-search-select">
-							<select>
-								<option value="0">전체</option>
-								<option value="1">전체</option>
-								<option value="2">강의명</option>
-								<option value="3">기술명</option>
+							<select id="s-type" name="type">
+								<option value="all" selected="selected">전체</option>
+								<option value="all">전체</option>
+								<option value="name">강의명</option>
+								<option value="skill">기술명</option>
 							</select>
 						</div>
 						<!-- input search -->
-						<input type="text" placeholder="Search.." name="course_search">
-						<button type="submit" class="text-light">
+						<input id="s-item" type="text" placeholder="Search.." name="item">
+						<button type="button" class="text-light" onclick="searchCourse()">
 							<i class="fa fa-search"></i>
 						</button>
 					</form>
@@ -149,13 +173,11 @@
 					</ul>
 					<!-- 정렬 순서 선택 -->
 					<div class="courses_order_select">
-					<form id="orderSelect" action="${path }/courses?order=" method="get">
-							<select class="form-select" id="courses_order_selector" onchange="changeCoursesOrder()">
-								<option value="recent" selected="selected">최신순</option>
-								<option value="rating">평점순</option>
-								<option value="famous">학생순</option>
-							</select>
-					</form>
+						<select class="form-select" id="sort-item">
+							<option id="recent" value="recent">최신순</option>
+							<option id="rating" value="rating">평점순</option>
+							<option id="famous" value="famous">학생순</option>
+						</select>
 					</div>
 				</nav>
 				<!-- courses_breadcrumb end -->
@@ -168,7 +190,8 @@
 							<div class="box media course_card_item">
 								<div class="course-thumbnail">
 									<a href="${path }/course/${i.course_seq}"> <!-- 썸네일 --> <img class="img-thumbnail"
-										alt="thumbnail" src="${path }/thumbnails?course_seq=${i.course_seq}&img_nm=${i.course_img_nm}">
+										alt="thumbnail" src="${path }/thumbnails?course_seq=${i.course_seq}&img_nm=${i.course_img_nm}"
+										style="width: 200px;height:100px;object-fit:cover;border:none;border-radius: 1em;">
 									</a>
 								</div>
 								<!-- content 시작 -->
@@ -190,18 +213,24 @@
 									</c:forEach>
 									</div>
 										 <!-- 별점 -->
-										<div class="rating">
-											<div class="rating_star">
-												<div class="star_solid">
-													<span class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="fa fa-star checked"></span> <span
-														class="review_cnt">(${i.course_studyCNT })</span>
-												</div>
+										<div class="c-rating-star">
+											<div class="star-wrapper bg-star">
+												<span class="fa fa-star gray-font"></span> <span
+													class="fa fa-star gray-font"></span> <span
+													class="fa fa-star gray-font"></span> <span
+													class="fa fa-star gray-font"></span> <span
+													class="fa fa-star gray-font"></span>
+											</div>
+											<div class="star-wrapper real-star"
+												style="width: <fmt:formatNumber type="number" maxFractionDigits="0" value="${i.course_rating.rate *20 }" />%;">
+												<span class="fa fa-star checked"></span> <span
+													class="fa fa-star checked"></span> <span
+													class="fa fa-star checked"></span> <span
+													class="fa fa-star checked"></span> <span
+													class="fa fa-star checked"></span>
 											</div>
 										</div>
+										<span class="c_rating_avg dark-font">(${i.course_rating.rate })</span>
 									</a>
 									<!-- 가격 -->
 									<div class="course_price">
@@ -224,16 +253,37 @@
 										</div>
 
 										<div class="cart_btn_container ">
-											<!-- 카트 버튼 -->
-											<button type="button" class="btn " data-bs-toggle="tooltip"
-												data-bs-placement="left" title="바구니에 추가하기">
-												<i class="fa fa-shopping-cart"></i>
-											</button>
-											<!-- 위시리스트 버튼 -->
-											<button type="button" class="btn " data-bs-toggle="tooltip"
-												data-bs-placement="left" title="위시리스트에 추가하기">
-												<i class="far fa-heart"></i>
-											</button>
+											
+											<c:choose>
+												<c:when test="${user != null}">
+													<!-- 카트 버튼 -->
+													<button type="button" class="btn " data-bs-toggle="tooltip"
+														data-bs-placement="left" title="장바구니에 추가하기"
+														onclick="addToCart(${i.course_seq})">
+														<i class="fa fa-shopping-cart"></i>
+													</button>
+													<!-- 위시리스트 버튼 -->
+													<button type="button" class="btn " data-bs-toggle="tooltip"
+														data-bs-placement="left" title="위시리스트에 추가하기"
+														onclick="addToWishList(${i.course_seq})">
+														<i class="far fa-heart"></i>
+													</button>
+												</c:when>
+												<c:otherwise>
+															<button type="button" class="btn " data-bs-toggle="tooltip"
+														data-bs-placement="left" title="장바구니에 추가하기"
+														onclick="showLoginModal()">
+														<i class="fa fa-shopping-cart"></i>
+													</button>
+													<!-- 위시리스트 버튼 -->
+													<button type="button" class="btn " data-bs-toggle="tooltip"
+														data-bs-placement="left" title="위시리스트에 추가하기"
+														onclick="showLoginModal()">
+														<i class="far fa-heart"></i>
+													</button>
+												</c:otherwise>
+											</c:choose>
+											
 										</div>
 									</div>
 								</div>
@@ -253,20 +303,107 @@
 </div>
 
 <script type="text/javascript">
+	$(document).ready(function(){
+		if("${sort}" != null || "${sort}" != "" ){
+			var sortType = "#"+"${sort}";
+			$(sortType).prop("selected",true);
+		}
+	});
+	
 	$("div.acoordion-header").on('click', function() {
 		$(this).next(".acoordoion-body").slideToggle(100);
 	});
+	
+	function searchCourse(){
+		let input = $("#s-item");
+		let type = $("#s-type option:selected").val();
+		let val = input.val().trim();
+		let valid = $("#s-null-check");
+		if(val == "" || val == null){
+			input.focus();
+			valid.css("display","block");
+			return;
+		}else{
+			valid.css("display","none");
+		}
+		
+		$("#course-search").submit();
+	}
+	
+	$("#sort-item").on('select change',function(){
+		location.href = '${path}/courses?order='+$(this).val();
+	});
+	
+	function addToWishList(seq){
+		$.ajax({
+			url : "${path}/order/addToWishList",
+			type : "post",
+			dataType : "json",
+			data : { "member_id" : "${user.member_id}",
+					"course_seq" : seq},
+			success : function(data){
+				var result = data.result;
+				var error = data.error;
+				var msg = data.msg;
+				if(result == 'true'){
+					Confirm(msg,"success","${path}/order/wishList");
+				}else{
+					if(error == 'duplicated'){
+						Confirm(msg,"warning","${path}/order/wishList");
+					}else if(error == 'duplicated-purchase') {
+						Confirm(msg,"warning","${path}/mypage/course");
+					}else{
+						Swal.fire({
+							  icon: 'error',
+							  text: msg
+							})
+					}
+				}
+			}
+		})
+	}
+function addToCart(seq){
+	$.ajax({
+		url : "${path}/order/addToCart",
+		type : "post",
+		dataType : "json",
+		data : { "member_id" : "${user.member_id}",
+				"course_seq" : seq},
+		success : function(data){
+			var result = data.result;
+			var error = data.error;
+			var msg = data.msg;
+			if(result == 'true'){
+				Confirm(msg,"success","${path}/order/cart");
+			}else{
+				if(error == 'duplicated'){
+					Confirm(msg,"warning","${path}/order/cart");
+				}else if(error == 'duplicated-purchase') {
+					Confirm(msg,"warning","${path}/mypage/course");
+				}else{
+					Swal.fire({
+						  icon: 'error',
+						  text: msg
+						})
+				}
+			}
+		}
+	})
+}
+function Confirm(msg,type,link){
+	Swal.fire({
+		  html: msg,
+		  icon: type,
+		  showCancelButton: true,
+		  confirmButtonText: '이동',
+		  cancelButtonText: '취소',
+		}).then((result) => {
+		  if (result.isConfirmed) {
+		    location.href = link;
+		  }
+		})
+}
 </script>
 
-<script type="text/javascript">
-/* function changeCoursesOrder(){ 
-	var order = $("#courses_order_selector option:selected").val();
-	alert(order);
-	var orderForm = $(#orderSelect);
-	orderForm.href += order;
-	alert(orderForm.href);
-} */
-
-</script>
 
 <%@ include file="../common/footer.jsp"%>

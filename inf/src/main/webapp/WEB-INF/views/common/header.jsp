@@ -26,7 +26,7 @@
 <link href="/resources/css/responsive.css" rel="stylesheet" />
 <link href="/resources/css/root.css" rel="stylesheet" />
 
-
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!--===============================================================================================-->
 <link href="/resources/css/logutil.css" rel="stylesheet" />
 <link href="/resources/css/login.css" rel="stylesheet" />
@@ -37,6 +37,15 @@
 	href="/resources/fonts/iconic/css/material-design-iconic-font.min.css">
 
 </head>
+<style>
+#nav-cart{
+	color: var(--main-color);
+}
+#nav-cart:hover{
+	color: var(--white-color);
+	background : var(--main-color);
+}
+</style>
 <c:set var="path" value="<%=request.getContextPath()%>" />
 
 <body class="sb-nav-fixed">
@@ -96,7 +105,7 @@
 						<div class="dropdown-col">
 							<a class="nav-link" role="button" href="#!">인프런</a>
 							<div class="dropdown-content-hover">
-								<a class="dropdown-item" href="#!">수강평</a> <a
+								<a class="dropdown-item" href="${path }/review/course">수강평</a> <a
 									class="dropdown-item" href="#!">멘토링 후기</a> <a
 									class="dropdown-item" href="#!">스터디</a> <a
 									class="dropdown-item" href="#!">인프런 이야기</a> <a
@@ -109,7 +118,7 @@
 				<c:if test="${user == null}">
 					<div class="header-buttons ms-auto">
 						<button type="button"
-							class="btn btn-outline-warning web-btn-header">지식 공유 참여</button>
+							class="btn btn-outline-warning web-btn-header" onclick="location.href='${path}/mypage/applyMentor'">지식 공유 참여</button>
 						<button type="button" class="btn btn-outline-info"
 							onclick="showLoginModal()">로그인</button>
 						<button type="button" class="btn btn-outline-primary"
@@ -119,36 +128,61 @@
 				<c:if test="${user != null}">
 					<div class="header-buttons ms-auto" style="display: flex">
 						<button type="button"
-							class="btn btn-outline-warning web-btn-header">지식 공유 참여</button>
+							class="btn btn-outline-warning web-btn-header" onclick="location.href='${path}/mypage/applyMentor'">지식 공유 참여</button>
 						<div id="for-web" class="dropdown-col" style="position: relative;">
-							<button type="button" role="button"
+						<button id="nav-cart" type="button" role="button" class="btn" 
+						onclick="location.href='${path }/order/cart'"><i class="fas fa-shopping-cart"></i></button>
+						<div class="dropdown-content-hover" style="right: 0;">
+									<div class="dropdown-row">
+									<a class="dropdown-item" href="${path }/order/cart">장바구니</a> 
+									<a class="dropdown-item" href="${path }/order/wishList">위시리스트</a>
+								</div>
+								</div>
+						</div>
+						<div id="for-web" class="dropdown-col" style="position: relative;">
+								<c:choose>
+									<c:when test="${user.member_role == '관리자' }">
+									<button type="button" role="button"
+									class="btn btn-outline-primary"
+									onclick="location.href='${path }/admin/manageCourse'">내 정보</button>
+									<div class="dropdown-content-hover" style="right: 0;">
+									<div class="dropdown-row">
+									<a class="dropdown-item" href="${path }/admin/manageCourse">강의 관리</a> 
+									<a class="dropdown-item" href="${path }/admin/manageMentor">멘토 관리</a>
+									<a class="dropdown-item" href="${path }/admin/manageCommunity">커뮤니티 관리</a>
+									<a class="dropdown-item" href="${path }/admin/amount">정산 내역</a> 
+									<a class="dropdown-item" href="${path }/member/logout">로그아웃</a>
+								</div>
+								</div>
+									</c:when>
+									<c:otherwise>
+									<button type="button" role="button"
 								class="btn btn-outline-primary"
 								onclick="location.href='${path }/mypage/main'">내 정보</button>
 							<div class="dropdown-content-hover" style="right: 0;">
-								<div class="dropdown-row">
-									<a class="dropdown-item" href="${path }/mypage/myCourse">내
-										학습</a> <a class="dropdown-item" href="${path }/mypage/myCart">장바구니</a>
-									<a class="dropdown-item" href="${path }/mypage/myWishList">위시리스트</a>
-									<a class="dropdown-item" href="${path }/mypage/myArtilces">작성한
-										게시글</a> <a class="dropdown-item"
-										href="${path }/mypage/myPurchaseHistory">구매내역</a> <a
-										class="dropdown-item" href="${path }/member/logout">로그아웃</a>
+										<div class="dropdown-row">
+									<a class="dropdown-item" href="${path }/mypage/course">내 학습</a> 
+									<a class="dropdown-item" href="${path }/order/wishList">위시리스트</a>
+									<a class="dropdown-item" href="${path }/mypage/artilces">작성한 게시글</a> 
+									<a class="dropdown-item" href="${path }/order/courseHistory">구매내역</a> 
+									<a class="dropdown-item" href="${path }/member/logout">로그아웃</a>
 								</div>
-							</div>
+								</div>
+									</c:otherwise>
+								</c:choose>
 						</div>
 						<div id="for-mobile" class="dropdown-col dropdown dropdown-menu-end">
 						<button type="button" role="button"
 								class="btn btn-outline-primary"  data-bs-toggle="dropdown"
 								ondblclick="location.href='${path }/mypage/main'">내 정보</button>
 								<ul class="dropdown-menu" style="right: 0;left: unset;">
-									<li><a class="dropdown-item" href="${path }/mypage/myCourse">내
+									<li><a class="dropdown-item" href="${path }/mypage/course">내
 										학습</a></li>
-									<li><a class="dropdown-item" href="${path }/mypage/myCart">장바구니</a></li>
-									<li><a class="dropdown-item" href="${path }/mypage/myWishList">위시리스트</a></li>
-									<li><a class="dropdown-item" href="${path }/mypage/myArtilces">작성한
+									<li><a class="dropdown-item" href="${path }/order/wishList">위시리스트</a></li>
+									<li><a class="dropdown-item" href="${path }/mypage/artilces">작성한
 										게시글</a></li>
 									<li><a class="dropdown-item"
-										href="${path }/mypage/myPurchaseHistory">구매내역</a></li>
+										href="${path }/order/courseHistory">구매내역</a></li>
 									<li><a class="dropdown-item" href="${path }/member/logout">로그아웃</a></li>
 								</ul>
 							</div>

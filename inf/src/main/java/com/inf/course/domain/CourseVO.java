@@ -2,6 +2,9 @@ package com.inf.course.domain;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
+
+import com.inf.review.domain.RatingVO;
 
 import lombok.Data;
 
@@ -12,6 +15,7 @@ public class CourseVO {
 	private String course_NM; // 강좌 이름
 	private String course_level; // 난이도
 	private int    course_studyCNT; // 수강생 수
+	private RatingVO course_rating; // 평점
 	private String course_img_nm; // 대표 이미지 경로
 	private String course_intro; // 소개
 	private int    course_price; // 정상가

@@ -23,7 +23,6 @@ section#course-detail-header{
 	}
 #course-detail-header .course_content{
 	width: 69.9%;
-	min-width: max-content;
 	height:max-content;
 	margin:auto;
 	padding-left: 2em;

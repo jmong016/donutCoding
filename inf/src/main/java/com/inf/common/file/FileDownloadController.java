@@ -17,14 +17,15 @@ import net.coobird.thumbnailator.Thumbnails;
 
 @Controller
 public class FileDownloadController {
-	private static String CURR_IMAGE_REPO_PATH = "C:\\inf\\file_repo";
+	private static String CURR_COURSE_REPO_PATH = "C:\\inf\\file_repo\\course";
+	private static String CURR_PROFILE_REPO_PATH = "C:\\inf\\file_repo\\profile";
 	
 	@RequestMapping("/download")
 	protected void download(@RequestParam("img_nm") String img_nm,
 		                 	@RequestParam("course_seq") String course_seq,
 			                 HttpServletResponse response) throws Exception {
 		OutputStream out = response.getOutputStream();
-		String filePath=CURR_IMAGE_REPO_PATH+"\\"+course_seq+"\\"+img_nm;
+		String filePath=CURR_COURSE_REPO_PATH+"\\"+course_seq+"\\"+img_nm;
 		File image=new File(filePath);
 
 		response.setHeader("Cache-Control","no-cache");
@@ -45,7 +46,7 @@ public class FileDownloadController {
 	protected void thumbnails(@RequestParam("img_nm") String img_nm, @RequestParam("course_seq") String course_seq,
 			                 HttpServletResponse response) throws Exception {
 		OutputStream out = response.getOutputStream();
-		String filePath=CURR_IMAGE_REPO_PATH+"\\"+course_seq+"\\"+img_nm;
+		String filePath=CURR_COURSE_REPO_PATH+"\\"+course_seq+"\\"+img_nm;
 		File image=new File(filePath);
 		
 		int lastIndex = img_nm.lastIndexOf(".");
@@ -62,7 +63,7 @@ public class FileDownloadController {
 	protected void detailThumbnails(@RequestParam("img_nm") String img_nm, @RequestParam("course_seq") String course_seq,
 			                 HttpServletResponse response) throws Exception {
 		OutputStream out = response.getOutputStream();
-		String filePath=CURR_IMAGE_REPO_PATH+"\\"+course_seq+"\\"+img_nm;
+		String filePath=CURR_COURSE_REPO_PATH+"\\"+course_seq+"\\"+img_nm;
 		File image=new File(filePath);
 		
 		int lastIndex = img_nm.lastIndexOf(".");
@@ -70,6 +71,29 @@ public class FileDownloadController {
 		
 		if (image.exists()) { 
 			Thumbnails.of(image).size(500, 300).outputFormat("png").toOutputStream(out);
+		}
+		byte[] buffer = new byte[1024 * 8];
+		out.write(buffer);
+		out.close();
+	}
+	@RequestMapping("/profile")
+	protected void profile(@RequestParam("img_nm") String img_nm, @RequestParam("member_id") String member_id,
+			                 HttpServletResponse response) throws Exception {
+		OutputStream out = response.getOutputStream();
+		File image;
+		if(img_nm.equalsIgnoreCase("default_profile.png")) {
+			String filePath=CURR_PROFILE_REPO_PATH+"\\common\\"+img_nm;
+			image=new File(filePath);
+		}else {
+			String filePath=CURR_PROFILE_REPO_PATH+"\\"+member_id+"\\"+img_nm;
+			image=new File(filePath);
+		}
+		
+		int lastIndex = img_nm.lastIndexOf(".");
+		String imageFileName = img_nm.substring(0,lastIndex);
+		
+		if (image.exists()) { 
+			Thumbnails.of(image).size(300, 400).outputFormat("png").toOutputStream(out);
 		}
 		byte[] buffer = new byte[1024 * 8];
 		out.write(buffer);

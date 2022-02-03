@@ -9,7 +9,6 @@
     <result property="member_id" column="member_id"/>
     <result property="course_NM" column="course_NM"/>
     <result property="course_level" column="course_level"/>
-    <result property="course_studyCNT" column="course_studyCNT"/>
     <result property="course_img_nm" column="course_img_nm"/>
     <result property="course_intro" column="course_intro"/>
     <result property="course_price" column="course_price"/>
@@ -20,6 +19,8 @@
     <result property="course_cancelDT" column="course_cancelDT"/>
     <result property="course_available_period" column="course_available_period"/>
     <result property="course_status" column="course_status"/>
+	<collection property="course_rating" column="course_seq" ofType="com.inf.review.domain.RatingVO" select="getRatingBySeq"/>
+	<collection property="course_studyCNT" column="course_seq" ofType="Integer" select="getStudyCountingBySeq"/>
 	<collection property="ct_list" column="course_seq" javaType="java.util.ArrayList" ofType="com.inf.course.domain.categoryVO" select="getCategoryListBySeq"/>
 	<collection property="skill_list" column="course_seq" javaType="java.util.ArrayList" ofType="com.inf.course.domain.skillVO" select="getSkillListBySeq"/>
 </resultMap>
@@ -33,7 +34,7 @@
 	<select id="selectCourseSeqByLevel" resultMap="courseMap" parameterType="String">
 		<![CDATA[
 		select t.* from (select * from course
-		where course_level=#{level}
+		where course_level=#{level} and course_status = '승인완료'
 		order by course_regdt desc) t
 		where ROWNUM <= 8
 		]]>
@@ -41,14 +42,10 @@
 	
 	<select id="selectCourseSeqByRegDT" resultMap="courseMap">
 		<![CDATA[
-		select t.* from (select * from course
+		select t.* from (select * from course where course_status = '승인완료'
 		order by course_regdt desc) t
 		where ROWNUM <= 8
 		]]>
-	</select>
-	
-	<select id="selectAllCourses" resultMap="courseMap">
-		select * from course order by course_regdt desc
 	</select>
 	
 	<select id="selectAllCategoriesAndSkills" resultMap="ctMap">
@@ -58,7 +55,7 @@
 	<select id="selectCourseByCategory" parameterType="Integer" resultMap="courseMap">
 		<![CDATA[
 		select * from course 
-		where course_seq in(select course_seq from course_category where category_seq = #{category_seq})
+		where course_seq in(select course_seq from course_category where category_seq = #{category_seq}) and course_status = '승인완료'
 		]]>
 	</select>
 
@@ -77,14 +74,13 @@
 		</selectKey>
 		<![CDATA[
 		   insert into course(
-		   course_seq, member_id , course_NM , course_level , 
-		   course_studyCNT ,course_img_nm , course_intro , course_price , 
+		   course_seq, member_id , course_NM , course_level ,course_img_nm , course_intro , course_price , 
 		   course_sales_price , course_discount_rate , course_applyDT , course_status ,
 		   course_available_period
 		   )
 			values(
 			#{course_seq} , #{member_id} , #{course_NM} , #{course_level},
-			0 , #{course_img_nm} , #{course_intro} , #{course_price},
+			#{course_img_nm} , #{course_intro} , #{course_price},
 			#{course_sales_price} , #{course_discount_rate} , sysdate , '승인대기', #{course_available_period}
 			)
 		]]>
@@ -142,6 +138,68 @@
 		select * from course where course_seq=#{course_seq}
 	</select>
 
+	<select id="selectAllAwaitCourses" resultMap="courseMap">
+		select * from course where course_status = '승인대기' order by course_applydt desc
+	</select>
+	
+	<select id="selectAllAbleCourses" resultMap="courseMap">
+		select * from course where course_status = '승인완료' order by course_regdt desc
+	</select>
+	
+	<select id="selectAllAbleCoursesOrderByRating" resultMap="courseMap">
+		select c.* from course c, (select course_seq,AVG(review_rating) as rate from review group by course_seq order by AVG(review_rating) desc) r 
+		where c.course_seq = r.course_seq(+) and c.course_status = '승인완료' order by r.rate desc NULLS LAST, c.course_regdt desc
+	</select>
+	
+	<select id="selectAllAbleCoursesOrderByPersonnel" resultMap="courseMap">
+		select c.* from course c, (select course_seq,count(*) as count from order_list group by course_seq order by count(*) desc) o 
+where c.course_seq = o.course_seq(+) and c.course_status = '승인완료' order by o.count desc NULLS LAST, c.course_regdt desc
+	</select>
+	
+	<select id="selectAllEnableCourses" resultMap="courseMap">
+		select * from course where course_status = '판매중지' order by course_stopdt desc
+	</select>
+	
+	<update id="updateCourseStatusToApproved">
+		update course set course_status = '승인완료',course_regdt = sysdate where course_seq = #{course_seq}
+	</update>
+	
+	<update id="updateCourseStatusToStop">
+		update course set course_status = '판매중지',course_stopdt = sysdate where course_seq = #{course_seq}
+	</update>
+	
+	<update id="updateCourseStatusToAwait">
+		update course set course_status = '승인대기',course_applydt = sysdate,course_canceldt = null where course_seq = #{course_seq}
+	</update>
+	
+	<select id="selectAbleCourses" resultMap="courseMap">
+		select * from course where course_status = '승인완료' and member_id=#{member_id} order by course_regdt desc
+	</select>
+	
+	<select id="selectCourseBySearchSkill" resultMap="courseMap">
+		select c.*,cs.skill_seq from course c, course_skill cs where c.course_seq=cs.course_seq 
+		and c.course_status = '승인완료' and cs.skill_seq in 
+		(select skill_seq from skill where skill_nm like #{item}) order by c.course_regdt desc
+	</select>
+	
+	<select id="selectCourseBySearchName" resultMap="courseMap">
+		select * from course where course_nm like #{item} and course_status = '승인완료' order by course_regdt desc
+	</select>
+	
+	<select id="selectCourseBySearchAll" resultMap="courseMap">
+		select c.*,cs.skill_seq from course c, course_skill cs where c.course_seq=cs.course_seq and c.course_status = '승인완료' and 
+(cs.skill_seq in (select skill_seq from skill where skill_nm like #{item}) or c.course_nm like #{item}) order by c.course_regdt desc
+	</select>
+	
+	<!-- ....................................................................................... -->
+	<select id="getRatingBySeq" resultType="com.inf.review.domain.RatingVO">
+		select trunc(AVG(review_rating),1) as rate, count(*) as count from review where course_seq = #{course_seq}
+	</select>
+	
+	<select id="getStudyCountingBySeq" resultType="Integer">
+		select count(*) from order_list where course_seq = #{course_seq}
+	</select>
+	
 	<select id="getCategoryListBySeq" resultType="com.inf.course.domain.CategoryVO">
 	    select ct.* from course_category cc, category ct 
 	    where cc.category_seq=ct.category_seq and cc.course_seq= #{course_seq}
@@ -158,5 +216,7 @@
 		and cs.category_seq=#{category_seq}
 	</select>
 	
-	
+	<select id="selectCourseImageFiles" resultType="com.inf.task.domain.CourseFileVO">
+		select course_seq, course_img_nm from course
+	</select>
 </mapper>

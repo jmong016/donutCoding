@@ -38,16 +38,15 @@
       <!-- <property name="mapperLocations" value="classpath:com/inf/mapper/*.xml" /> -->
    </bean>
 
-   <bean id="transactionManager"
-      class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-      <property name="dataSource" ref="dataSource"></property>
-   </bean>
-
 	<!-- WARN : org.mybatis.spring.mapper.ClassPathMapperScanner - No MyBatis mapper was found in '[com.inf.mapper]' package. Please check your configuration. -->
    <mybatis-spring:scan base-package="com.inf" />
    
    <!-- annotation을 읽어줄 bean을 써주자. -->
-   <tx:annotation-driven transaction-manager="transactionManager" />
+   <bean id="transactionManager"
+      class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="dataSource"></property>
+   </bean>
+   <tx:annotation-driven />
       
   <!--  <context:component-scan
     base-package="com.inf.aop"></context:component-scan> 
