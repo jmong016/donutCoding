@@ -1,3 +1,6 @@
+--create user inflearn IDENTIFIED by admin;
+--grant dba to inflearn;
+
 /* 회원 */
 CREATE TABLE member (
 	member_id VARCHAR2(60) NOT NULL, /* 회원아이디 */
@@ -473,16 +476,16 @@ CREATE SEQUENCE seq_wish START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_order START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_order_id START WITH 1 INCREMENT BY 1;
 
-drop SEQUENCE seq_course;
-drop SEQUENCE seq_category;
-drop SEQUENCE seq_skill;
-drop SEQUENCE seq_course_category;
-drop SEQUENCE seq_course_skill;
-drop SEQUENCE seq_category_skill;
-drop SEQUENCE seq_review;
-drop SEQUENCE seq_cart;
-drop SEQUENCE seq_wish;
-drop SEQUENCE seq_order;
+--drop SEQUENCE seq_course;
+--drop SEQUENCE seq_category;
+--drop SEQUENCE seq_skill;
+--drop SEQUENCE seq_course_category;
+--drop SEQUENCE seq_course_skill;
+--drop SEQUENCE seq_category_skill;
+--drop SEQUENCE seq_review;
+--drop SEQUENCE seq_cart;
+--drop SEQUENCE seq_wish;
+--drop SEQUENCE seq_order;
 
 -- function
 create or replace function get_order_seq

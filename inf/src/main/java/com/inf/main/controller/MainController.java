@@ -34,11 +34,10 @@ public class MainController {
 	private MemberService memberService;
 
 	@GetMapping(value = {"/","/main"})
-	public String main(HttpServletRequest request,Model model) {
+	public String main(HttpServletRequest request,Model model, HttpSession session) {
 		Map<String, List<CourseVO>> courseMap = courseService.indexCourseLists();
 		List<ReviewVO> review = reviewService.selectRecentReviewOfCourse();
 		int memberCount = memberService.getAllUserCount();
-		HttpSession session = request.getSession();
 		if(session.getAttribute("ctMap") == null) {
 			List<CategorySkillVO> ctMap = courseService.categorySkillLists();
 			session.setAttribute("ctMap", ctMap);

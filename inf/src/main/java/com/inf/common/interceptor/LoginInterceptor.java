@@ -19,12 +19,16 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
     	Boolean result = true;
-    	// log.info("인터셉터 접근 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
+    	log.info("인터셉터 접근 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
     	if (handler instanceof HandlerMethod) {
             HandlerMethod hm = (HandlerMethod) handler;
             UserVO sessionUser = (UserVO) request.getSession().getAttribute("user");
-//            log.info("어노테이션 가졌니? " +hm.hasMethodAnnotation(LoginRequired.class));
+            log.info("어노테이션 가졌니? " +hm.hasMethodAnnotation(LoginRequired.class));
 //            log.info("user 붙었니? " + sessionUser);
+            if(!hm.hasMethodAnnotation(LoginRequired.class)) {
+            	return result;
+            }
+            
             if (hm.hasMethodAnnotation(LoginRequired.class) && sessionUser == null) {
 //            	log.info("if문 들어왔니? >>>>>>>>>>>>>>>> ");
             	String referer = request.getRequestURI();
