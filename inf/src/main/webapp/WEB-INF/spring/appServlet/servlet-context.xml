@@ -46,8 +46,14 @@
       pre-post-annotations="enabled" secured-annotations="enabled" /> -->
 
 	<interceptors>
+		<interceptor>
+			<mapping path="/**" />
+		    <exclude-mapping path="/main/login"/>
+            <exclude-mapping path="/resources/**"/> 
 			<beans:bean id="loginInterceptor" class="com.inf.common.interceptor.LoginInterceptor">
 			</beans:bean>
+			
+		</interceptor>
 	</interceptors>
 	
 </beans:beans>
